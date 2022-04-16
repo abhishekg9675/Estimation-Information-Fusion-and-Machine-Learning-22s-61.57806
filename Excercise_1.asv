@@ -1,0 +1,37 @@
+%Initial State = [x_pos, y_pos, x_vel, y_vel]
+initial_state = [0 0 0 10]
+time = 60;
+time_step = 1
+
+%{
+%Problem 1
+F = [1 0 1 0 ; 0 1 0 1 ; 0 0 1 0 ; 0 0 0 1]
+system_state = initial_state
+updated_state = initial_state
+for i=1:time
+    updated_state = F * transpose(updated_state)
+    updated_state = transpose(updated_state)
+    system_state = [system_state; updated_state]
+end
+plot(system_state(:,1),system_state(:,2))
+%}
+
+
+%Problem 2
+F = [1 time_step 0 0 ; 0 1 0 0 ; 0 0 1 time_step ; 0 0 0 1];
+q = 0.1;
+system_state = initial_state;
+updated_state = initial_state;
+for i=1:time
+    noise = mvnrnd([0 0 0 0],[ ...
+        (time_step^3)/3 (time_step^2)/2 0 0; ...
+        (time_step^2)/2 time_step 0 0; ...
+        0 0 (time_step^3)/3 (time_step^2)/2; ...
+        0 0 (time_step^2)/2 time_step] ...
+        *q);
+    updated_state = F * transpose(updated_state) + noise;
+    updated_state = transpose(updated_state);
+    system_state = [system_state; updated_state];
+end
+disp(system_state(:,1))
+
