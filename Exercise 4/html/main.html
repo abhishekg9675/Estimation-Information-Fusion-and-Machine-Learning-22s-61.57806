@@ -1,0 +1,455 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>main</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-05-23"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput">close <span class="string">all</span>
+clearvars
+
+T = 1; <span class="comment">% Time step is one second</span>
+time_step = 1
+F = [1 0 T 0 ; 0 1 0 T ; 0 0 1 0 ; 0 0 0 1]; <span class="comment">% TASK 1 - Complete the state transition matrix</span>
+proNoise = 0.01; <span class="comment">% Process noise intensity q</span>
+Q = proNoise*[ <span class="keyword">...</span>
+            (T^3)/3 0 (T^2)/2 0; <span class="keyword">...</span>
+            0 (T^3)/3 0 (T^2)/2; <span class="keyword">...</span>
+            (T^2)/2 0 T 0; <span class="keyword">...</span>
+            0 (T^2)/2 0 T];
+
+<span class="comment">% TASK 1 - Complete the transition noise covariance matrix</span>
+
+sigmaX = 5; <span class="comment">% Measurement error standard deviation in x</span>
+sigmaY = 5; <span class="comment">% Measurement error standard deviation in y</span>
+R = [sigmaX^2 0 ; 0 sigmaY^2]; <span class="comment">% TASK 2 - Complete the measurement error covariance matrix</span>
+H = [1 0 0 0; 0 1 0 0]; <span class="comment">% TASK 2 - Complete the measurement matrix</span>
+load(<span class="string">'data.mat'</span>);
+input_data = load(<span class="string">'data.mat'</span>);
+measurements_input_data = input_data.measurements;
+target_state_input_data = input_data.targetState;
+estimate = zeros(4,60);
+gain = zeros(1,60);
+
+<span class="comment">% Indexing for 60 times steps</span>
+<span class="keyword">for</span> i = 1:60
+   <span class="comment">%Store all the measurements</span>
+   z = measurements(:,i);
+   <span class="keyword">if</span> i == 2
+      <span class="comment">% In the second time step perform initialisation</span>
+      mean = [z(1) z(2) z(1)-measurements(1,i-1) z(2)-measurements(2,i-1)]';
+      covar = [R(1,1) 0 R(1,1) 0; 0 R(2,2) 0 R(2,2); R(1,1) 0 2*R(1,1) 0; 0 R(2,2) 0 2*R(2,2)];
+      estimate(:,i) = mean;
+   <span class="keyword">elseif</span> i &gt; 2
+</pre><pre class="codeinput">       <span class="comment">%%Perform the Kalman filter prediction</span>
+       [priorMean, priorCovar] = kalmanPrediction(mean,covar,F,Q);
+
+       <span class="keyword">if</span> i == 4
+           <span class="comment">% TASK 4 - Plot the prior pdf using surf and mvnpdf</span>
+            X = mvnrnd(priorMean(1:2).',priorCovar(1:2,1:2),100);
+            Y = mvnpdf(X, priorMean(1:2).',priorCovar(1:2,1:2));
+            xx = X(:,1); yy = X(:,2); zz = Y;
+            FF = TriScatteredInterp(xx,yy,zz);
+            qx = linspace(min(xx),max(xx),100);
+            qy = linspace(min(yy),max(yy),100);
+            [qx,qy] = meshgrid(qx,qy);
+            qz = FF(qx,qy);
+            figure;
+
+            h = surfc(qx,qy,qz);
+            xlabel(<span class="string">'x'</span>);
+            ylabel(<span class="string">'y'</span>);
+            zlabel(<span class="string">'Probability Density'</span>);
+            title(<span class="string">'Prior PDF'</span>);
+            hold <span class="string">on</span>;
+       <span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <pre class="codeinput">       <span class="comment">% Perform the Kalman filter update and log the Kalman gain</span>
+       <span class="comment">% additionally</span>
+       [mean,covar,gain(:,i)] = kalmanUpdate(priorMean,priorCovar,z,H,R);
+
+       <span class="keyword">if</span> i == 4
+           <span class="comment">% TASK 4 - Plot the posterior pdf using surf and mvnpdf</span>
+           disp(<span class="string">'Since we are looking at a random parameter estimation problem, we are basically choosing between MAP and MMSE estimators. Both provide good results but since we are using gaussian prior both MAP and MMSe estimators will give the exact same answer. The results will only differ if any other prior is used instead'</span>)
+           X = mvnrnd(mean(1:2).',covar(1:2,1:2),100);
+           Y = mvnpdf(X, mean(1:2).',covar(1:2,1:2));
+           xx = X(:,1); yy = X(:,2); zz = Y;
+
+            FF = TriScatteredInterp(xx,yy,zz);
+            qx = linspace(min(xx),max(xx),100); <span class="comment">% define your grid here</span>
+            qy = linspace(min(yy),max(yy),100);
+            [qx,qy] = meshgrid(qx,qy);
+            qz = FF(qx,qy);
+            <span class="comment">%figure;</span>
+
+            h = surfc(qx,qy,qz);
+            xlabel(<span class="string">'x'</span>);
+            ylabel(<span class="string">'y'</span>);
+            zlabel(<span class="string">'Probability Density'</span>);
+            title(<span class="string">'Posterior PDF'</span>);
+
+
+       <span class="keyword">end</span>
+
+       <span class="comment">% Log the estimate</span>
+       estimate(:,i) = mean;
+</pre><pre class="codeoutput">Since we are looking at a random parameter estimation problem, we are basically choosing between MAP and MMSE estimators. Both provide good results but since we are using gaussian prior both MAP and MMSe estimators will give the exact same answer. The results will only differ if any other prior is used instead
+</pre><img vspace="5" hspace="5" src="main_02.png" alt=""> <pre class="codeinput">   <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">
+time_step =
+
+     1
+
+</pre><pre class="codeinput"><span class="comment">% TASK 5 - Plot the true state, the measurements and state estimate</span>
+disp(<span class="string">'State estimation helps us identify good idea of the sate given the measurements. Which measurements alone would not be sufficent to do so and will be very noisy due to noise, or other sources.'</span>)
+figure;
+plot(target_state_input_data.', <span class="string">'DisplayName'</span>,<span class="string">'True State Values'</span>);
+xlabel(<span class="string">'Time'</span>);
+ylabel(<span class="string">'State Values'</span>);
+title(<span class="string">'True Target States, Measurements, State Estimates (Process Noise - 0.01)'</span>);
+legend();
+
+hold <span class="string">on</span>;
+time = 1:60;
+scatter(time, measurements_input_data, <span class="string">'x'</span>, <span class="string">'DisplayName'</span>,<span class="string">'Measurements'</span>);
+hold <span class="string">on</span>;
+plot(estimate.', <span class="string">'DisplayName'</span>,<span class="string">'State Estimates'</span>);
+
+disp(estimate(:,60));
+<span class="comment">% TASK 6 - Plot the Kalman filter gain</span>
+disp(<span class="string">'The kalman gain weights the measurement innovation (difference between the measurement and the expected value of measurement), and helps compute the posterior mean and covariance. The graph shows the variance of the estimator and the decreasing graph shows us that we are approching better state estimates with each measurement'</span>)
+
+figure;
+plot(gain.');
+xlabel(<span class="string">'Time'</span>);
+ylabel(<span class="string">'Kalman Gain'</span>);
+title(<span class="string">'Kalman Gain v/s Time (Process Noise - 0.01)'</span>);
+<span class="comment">% TASK 7 - Plot the Kalman filter gain</span>
+<span class="comment">%close all</span>
+<span class="comment">%clearvars</span>
+
+T = 1; <span class="comment">% Time step is one second</span>
+F = [1 0 T 0 ; 0 1 0 T ; 0 0 1 0 ; 0 0 0 1]; <span class="comment">% TASK 1 - Complete the state transition matrix</span>
+proNoise = 20; <span class="comment">% Process noise intensity q</span>
+Q = proNoise*[ <span class="keyword">...</span>
+            (T^3)/3 0 (T^2)/2 0; <span class="keyword">...</span>
+            0 (T^3)/3 0 (T^2)/2; <span class="keyword">...</span>
+            (T^2)/2 0 T 0; <span class="keyword">...</span>
+            0 (T^2)/2 0 T];
+
+sigmaX = 5; <span class="comment">% Measurement error standard deviation in x</span>
+sigmaY = 5; <span class="comment">% Measurement error standard deviation in y</span>
+R = [25 0 ; 0 25];
+H = [1 0 0 0; 0 1 0 0];
+load(<span class="string">'data.mat'</span>);
+input_data = load(<span class="string">'data.mat'</span>);
+measurements_input_data = input_data.measurements;
+target_state_input_data = input_data.targetState;
+estimate = zeros(4,60);
+gain = zeros(1,60);
+
+<span class="comment">% Indexing for 60 times steps</span>
+<span class="keyword">for</span> i = 1:60
+   <span class="comment">%Store all the measurements</span>
+   z = measurements(:,i);
+   <span class="keyword">if</span> i == 2
+      <span class="comment">% In the second time step perform initialisation</span>
+      mean = [z(1) z(2) z(1)-measurements(1,i-1) z(2)-measurements(2,i-1)]';
+      covar = [R(1,1) 0 R(1,1) 0; 0 R(2,2) 0 R(2,2); R(1,1) 0 2*R(1,1) 0; 0 R(2,2) 0 2*R(2,2)];
+      estimate(:,i) = mean;
+   <span class="keyword">elseif</span> i &gt; 2
+
+       <span class="comment">% Perform the Kalman filter prediction</span>
+       [priorMean, priorCovar] = kalmanPrediction(mean,covar,F,Q);
+       <span class="comment">% Perform the Kalman filter update and log the Kalman gain</span>
+       <span class="comment">% additionally</span>
+       [mean,covar,gain(:,i)] = kalmanUpdate(priorMean,priorCovar,z,H,R);
+       <span class="comment">% Log the estimate</span>
+       estimate(:,i) = mean;
+   <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+figure;
+plot(target_state_input_data.', <span class="string">'DisplayName'</span>,<span class="string">'True State Values'</span>);
+xlabel(<span class="string">'Time'</span>);
+ylabel(<span class="string">'State Values'</span>);
+title(<span class="string">'True Target States, Measurements, State Estimates (Process Noise-20)'</span> );
+legend();
+
+hold <span class="string">on</span>;
+time = 1:60;
+scatter(time, measurements_input_data, <span class="string">'x'</span>, <span class="string">'DisplayName'</span>,<span class="string">'Measurements'</span>);
+hold <span class="string">on</span>;
+plot(estimate.', <span class="string">'DisplayName'</span>,<span class="string">'State Estimates'</span>);
+
+disp(estimate(:,60))
+
+figure;
+plot(gain.');
+xlabel(<span class="string">'Time'</span>);
+ylabel(<span class="string">'Kalman Gain'</span>);
+title(<span class="string">'Kalman Gain v/s Time (Process Noise - 20)'</span>);
+disp(<span class="string">'The track plot clearly shows that there is more noise in the state estimates when the process noise intensity is more. Also becoause of this, the kalman filter gain is converging to a higher value since the state estimates have inherently more noise,  and the Kalman Filter update is unable to reduce it below a certain limit.'</span>)
+</pre><pre class="codeoutput">State estimation helps us identify good idea of the sate given the measurements. Which measurements alone would not be sufficent to do so and will be very noisy due to noise, or other sources.
+  -16.4385
+  587.6455
+   -0.5741
+   10.2068
+
+The kalman gain weights the measurement innovation (difference between the measurement and the expected value of measurement), and helps compute the posterior mean and covariance. The graph shows the variance of the estimator and the decreasing graph shows us that we are approching better state estimates with each measurement
+  -20.4568
+  588.0735
+   -2.6916
+   10.8939
+
+The track plot clearly shows that there is more noise in the state estimates when the process noise intensity is more. Also becoause of this, the kalman filter gain is converging to a higher value since the state estimates have inherently more noise,  and the Kalman Filter update is unable to reduce it below a certain limit.
+</pre><img vspace="5" hspace="5" src="main_03.png" alt=""> <img vspace="5" hspace="5" src="main_04.png" alt=""> <img vspace="5" hspace="5" src="main_05.png" alt=""> <img vspace="5" hspace="5" src="main_06.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+close all
+clearvars
+
+T = 1; % Time step is one second
+time_step = 1
+F = [1 0 T 0 ; 0 1 0 T ; 0 0 1 0 ; 0 0 0 1]; % TASK 1 - Complete the state transition matrix
+proNoise = 0.01; % Process noise intensity q
+Q = proNoise*[ ...
+            (T^3)/3 0 (T^2)/2 0; ...
+            0 (T^3)/3 0 (T^2)/2; ...
+            (T^2)/2 0 T 0; ...
+            0 (T^2)/2 0 T]; 
+
+% TASK 1 - Complete the transition noise covariance matrix
+
+sigmaX = 5; % Measurement error standard deviation in x
+sigmaY = 5; % Measurement error standard deviation in y
+R = [sigmaX^2 0 ; 0 sigmaY^2]; % TASK 2 - Complete the measurement error covariance matrix
+H = [1 0 0 0; 0 1 0 0]; % TASK 2 - Complete the measurement matrix
+load('data.mat');
+input_data = load('data.mat');
+measurements_input_data = input_data.measurements;
+target_state_input_data = input_data.targetState;
+estimate = zeros(4,60);
+gain = zeros(1,60);
+
+% Indexing for 60 times steps
+for i = 1:60 
+   %Store all the measurements
+   z = measurements(:,i); 
+   if i == 2
+      % In the second time step perform initialisation
+      mean = [z(1) z(2) z(1)-measurements(1,i-1) z(2)-measurements(2,i-1)]';
+      covar = [R(1,1) 0 R(1,1) 0; 0 R(2,2) 0 R(2,2); R(1,1) 0 2*R(1,1) 0; 0 R(2,2) 0 2*R(2,2)];
+      estimate(:,i) = mean;
+   elseif i > 2
+       
+       %%Perform the Kalman filter prediction
+       [priorMean, priorCovar] = kalmanPrediction(mean,covar,F,Q);
+       
+       if i == 4
+           % TASK 4 - Plot the prior pdf using surf and mvnpdf
+            X = mvnrnd(priorMean(1:2).',priorCovar(1:2,1:2),100);
+            Y = mvnpdf(X, priorMean(1:2).',priorCovar(1:2,1:2));
+            xx = X(:,1); yy = X(:,2); zz = Y;
+            FF = TriScatteredInterp(xx,yy,zz);
+            qx = linspace(min(xx),max(xx),100); 
+            qy = linspace(min(yy),max(yy),100);
+            [qx,qy] = meshgrid(qx,qy);
+            qz = FF(qx,qy);
+            figure;
+
+            h = surfc(qx,qy,qz);
+            xlabel('x');
+            ylabel('y');
+            zlabel('Probability Density');
+            title('Prior PDF');
+            hold on;
+       end
+       %% 
+       
+       % Perform the Kalman filter update and log the Kalman gain
+       % additionally
+       [mean,covar,gain(:,i)] = kalmanUpdate(priorMean,priorCovar,z,H,R);
+       
+       if i == 4
+           % TASK 4 - Plot the posterior pdf using surf and mvnpdf
+           disp('Since we are looking at a random parameter estimation problem, we are basically choosing between MAP and MMSE estimators. Both provide good results but since we are using gaussian prior both MAP and MMSe estimators will give the exact same answer. The results will only differ if any other prior is used instead')
+           X = mvnrnd(mean(1:2).',covar(1:2,1:2),100);
+           Y = mvnpdf(X, mean(1:2).',covar(1:2,1:2));
+           xx = X(:,1); yy = X(:,2); zz = Y;
+
+            FF = TriScatteredInterp(xx,yy,zz);
+            qx = linspace(min(xx),max(xx),100); % define your grid here
+            qy = linspace(min(yy),max(yy),100);
+            [qx,qy] = meshgrid(qx,qy);
+            qz = FF(qx,qy);
+            %figure;
+
+            h = surfc(qx,qy,qz);
+            xlabel('x');
+            ylabel('y');
+            zlabel('Probability Density');
+            title('Posterior PDF');
+
+
+       end
+
+       % Log the estimate
+       estimate(:,i) = mean;
+   end
+end
+%% 
+
+% TASK 5 - Plot the true state, the measurements and state estimate
+disp('State estimation helps us identify good idea of the sate given the measurements. Which measurements alone would not be sufficent to do so and will be very noisy due to noise, or other sources.')
+figure;
+plot(target_state_input_data.', 'DisplayName','True State Values');
+xlabel('Time');
+ylabel('State Values');
+title('True Target States, Measurements, State Estimates (Process Noise - 0.01)');
+legend();
+
+hold on;
+time = 1:60;
+scatter(time, measurements_input_data, 'x', 'DisplayName','Measurements');
+hold on;
+plot(estimate.', 'DisplayName','State Estimates');
+
+disp(estimate(:,60));
+% TASK 6 - Plot the Kalman filter gain
+disp('The kalman gain weights the measurement innovation (difference between the measurement and the expected value of measurement), and helps compute the posterior mean and covariance. The graph shows the variance of the estimator and the decreasing graph shows us that we are approching better state estimates with each measurement')
+
+figure;
+plot(gain.');
+xlabel('Time');
+ylabel('Kalman Gain');
+title('Kalman Gain v/s Time (Process Noise - 0.01)');
+% TASK 7 - Plot the Kalman filter gain
+%close all
+%clearvars
+
+T = 1; % Time step is one second
+F = [1 0 T 0 ; 0 1 0 T ; 0 0 1 0 ; 0 0 0 1]; % TASK 1 - Complete the state transition matrix
+proNoise = 20; % Process noise intensity q
+Q = proNoise*[ ...
+            (T^3)/3 0 (T^2)/2 0; ...
+            0 (T^3)/3 0 (T^2)/2; ...
+            (T^2)/2 0 T 0; ...
+            0 (T^2)/2 0 T]; 
+
+sigmaX = 5; % Measurement error standard deviation in x
+sigmaY = 5; % Measurement error standard deviation in y
+R = [25 0 ; 0 25]; 
+H = [1 0 0 0; 0 1 0 0]; 
+load('data.mat');
+input_data = load('data.mat');
+measurements_input_data = input_data.measurements;
+target_state_input_data = input_data.targetState;
+estimate = zeros(4,60);
+gain = zeros(1,60);
+
+% Indexing for 60 times steps
+for i = 1:60 
+   %Store all the measurements
+   z = measurements(:,i); 
+   if i == 2
+      % In the second time step perform initialisation
+      mean = [z(1) z(2) z(1)-measurements(1,i-1) z(2)-measurements(2,i-1)]';
+      covar = [R(1,1) 0 R(1,1) 0; 0 R(2,2) 0 R(2,2); R(1,1) 0 2*R(1,1) 0; 0 R(2,2) 0 2*R(2,2)];
+      estimate(:,i) = mean;
+   elseif i > 2
+       
+       % Perform the Kalman filter prediction
+       [priorMean, priorCovar] = kalmanPrediction(mean,covar,F,Q);
+       % Perform the Kalman filter update and log the Kalman gain
+       % additionally
+       [mean,covar,gain(:,i)] = kalmanUpdate(priorMean,priorCovar,z,H,R);
+       % Log the estimate
+       estimate(:,i) = mean;
+   end
+end
+
+figure;
+plot(target_state_input_data.', 'DisplayName','True State Values');
+xlabel('Time');
+ylabel('State Values');
+title('True Target States, Measurements, State Estimates (Process Noise-20)' );
+legend();
+
+hold on;
+time = 1:60;
+scatter(time, measurements_input_data, 'x', 'DisplayName','Measurements');
+hold on;
+plot(estimate.', 'DisplayName','State Estimates');
+
+disp(estimate(:,60))
+
+figure;
+plot(gain.');
+xlabel('Time');
+ylabel('Kalman Gain');
+title('Kalman Gain v/s Time (Process Noise - 20)');
+disp('The track plot clearly shows that there is more noise in the state estimates when the process noise intensity is more. Also becoause of this, the kalman filter gain is converging to a higher value since the state estimates have inherently more noise,  and the Kalman Filter update is unable to reduce it below a certain limit.')
+##### SOURCE END #####
+--></body></html>
