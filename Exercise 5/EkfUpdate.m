@@ -1,13 +1,17 @@
 function [xPosterior,PPosterior]= EkfUpdate(xPrior,PPrior,z,R,radarState)
 % Task 5 - Complete this function
 
-%xPosterior = [];
-%PPosterior = [];
+H = MeasurementMatrix(xPrior,radarState);
 
-H = MeasurementMatrix(z,radarState);
+xr = radarState(1);
+yr = radarState(2);
+x1 = xPrior(1);
+y1 = xPrior(2);
+h = [((x1-xr)^2 + (y1-yr)^2)^0.5 ; atan2((y1-yr),(x1-xr))];
 
 S = H * PPrior * transpose(H) + R ;
-W = PPrior * transpose(H) * inv(S);
+W = PPrior * transpose(H) / S;
 
-xPosterior = xPrior + W*(z-H*xPrior);
+xPosterior = xPrior + W*(z-h);
 PPosterior = PPrior - W*S*transpose(W);
+
